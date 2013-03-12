@@ -8,15 +8,27 @@ Simple issue tracking that incorporates a kanaban board contained in one single 
 Overview
 =========
 
-bugs.html is a simple one file html application that can be used to track issues about your development project. 
-It has no dependencies since all the required tools are bundled inside this one file. It can be dropped in the doc folder
-of your repository and then tracked by your source control tool along with your project's code.
+bugs.html is a simple one file html application that can be used to track issues for your development project. 
+It has no dependencies since all the required tools are bundled inside this one file. It can easily be dropped into 
+the doc folder of your repository and then in this way be tracked by your source control tool along with your project's 
+code.
 
 
 Usage
 =====
 
-You can drag taskss around and drop them into one of the development states. If you want to edit, 
+Dowload the latest version from here. Open it in your favorite text editor and prove a title for your project by setting
+the value for the title variable. You can also provide a logo image by settting the value for the logo variable to the
+base64 encoding of your image. 
+
+    <script>
+     var logo ;//= "Your org's logo image base64 encoded"
+     var title;//= "Your project name";
+     var tasks;// = []
+     
+    </script>
+
+You can then drag taskss around and drop them into one of the development states. If you want to edit, 
 add or remove tasks, click on the "Data" button on the top right corner. You can then:
 
 * Click on the New Task button to clear the input boxes and generate a new ID automatically.
@@ -26,7 +38,9 @@ add or remove tasks, click on the "Data" button on the top right corner. You can
 * Vissually differentiate on the Kanban board between Defects and Improvements.
 * Vissually notice the completion progress of your milestone with the progress bar on the top right corner. 
 
-bugs.html has two modes for storing data.
+bugs.html has two modes for storing data. The way to select what storage method to use is to set or not the value for 
+the tasks variable located at the top of the file. If the tasks variable is not defined then Automatic Mode will 
+be enabled, Manual Mode will be enabled if the tasks variable has a value set.
 
 * *Manual Mode* is excelent for tracking your bugs inside your source control system. 
 Just drop bugs.html file inside your repository and use it. Then once you're done click the Get Data button, copy it 
