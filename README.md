@@ -44,9 +44,10 @@ be enabled (this mode is still beta but works for simple projects with short dur
 if the tasks variable has a value set.
 
 * *Manual Mode* is excelent for tracking your bugs inside your source control system. 
-Just drop bugs.html file inside your repository and use it. Then once you're done click the Get Data button, copy it 
-by clicking CTRL+C and replace the data in the HTML file. You bugs will be tracked inside you repo. Excelent for simple
-projects that don't need a bug trcking software which is bigger than the project itself.
+Just drop bugs.html file inside your repository and use it. Then once you're done click the "Get Data" button, copy the 
+content of the dialog by clicking CTRL+C and then replace the data for the tasks variable in the HTML file with the data
+you just copied. You bugs will be tracked inside you repo. Excelent for simple projects that don't need a bug trcking software 
+which is bigger than the project itself.
 
 * *Automatic Mode* saves your changes automatic as you're making changes to the data. This mode is a more user friendly
 and behaves more like one of those big bug tracking systems. *This mode is still beta. See the TODO section for more info*
