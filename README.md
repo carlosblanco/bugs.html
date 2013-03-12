@@ -3,7 +3,7 @@ bugs.html
 
 Simple issue tracking that incorporates a kanaban board contained in one single html file. 
 
-![bugs.html](/doc/bugs-html.jpg)
+![bugs.html](/doc/bugs-html.png)
 
 Overview
 =========
