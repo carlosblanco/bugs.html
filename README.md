@@ -1,7 +1,7 @@
 bugs.html
 =========
 
-Simple issue tracking that incorporates a kanaban board contained in one single html file. 
+Simple issue tracking that incorporates a kanaban board. The hole thing contained in one single html file. 
 
 ![bugs.html](/doc/bugs-html.png)
 
@@ -17,9 +17,9 @@ code.
 Usage
 =====
 
-Dowload the latest version from here. Open it in your favorite text editor and prove a title for your project by setting
-the value for the title variable. You can also provide a logo image by settting the value for the logo variable to the
-base64 encoding of your image. 
+Download the latest version from [here](https://raw.github.com/carlosblanco/bugs.html/master/bugs.html). Open it in your
+favorite text editor and prove a title for your project by setting the value for the title variable. You can also 
+provide a logo image by settting the value for the logo variable to the base64 encoding of your image. 
 
     <script>
      var logo ;//= "Your org's logo image base64 encoded"
@@ -45,7 +45,7 @@ be enabled, Manual Mode will be enabled if the tasks variable has a value set.
 * *Manual Mode* is excelent for tracking your bugs inside your source control system. 
 Just drop bugs.html file inside your repository and use it. Then once you're done click the Get Data button, copy it 
 by clicking CTRL+C and replace the data in the HTML file. You bugs will be tracked inside you repo. Excelent for simple
-projects that don't need a bug trcking software which bigger than the project itself.
+projects that don't need a bug trcking software which is bigger than the project itself.
 
 * *Automatic Mode* saves your changes automatic as you're making changes to the data. This mode is a more user friendly
 and behaves more like onw of those big bug tracking systems. *This mode is still beta. See the TODO section for more info*
