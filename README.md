@@ -31,9 +31,9 @@ add or remove tasks, click on the "Data" button on the top right corner. Then yo
 * Click on the New Task button to clear the input boxes and generate a new ID automatically so you can create a new task.
 * Click on a task from the list of tasks and then save it with the same ID to update it.
 * Double click on a task from the list of tasks to delete them. 
-* Group taks into milestones by typing the same value in the Milestone text box.
+* Group taks into projects and milestones by typing the same value in the Project or Milestone text box.
 * Vissually differentiate on the Kanban board between Defects and Improvements.
-* Vissually notice the completion progress of your milestone with the progress bar on the top right corner. 
+* Vissually notice the completion of your project/milestone with the progress bar on the top right corner. 
 
 
 ### Storing Data
