@@ -5,7 +5,7 @@
  var logo ;//= "Your org's logo image base64 encoded"
  var title;//= "Your project name";
  
- var tasks = [{"id":"1","title":"App crashes","description":"1. Open app.\n2. Error message appears.\n3. Dismiss the message.\n4. Crash","milestone":"v1.0","state":"D","type":"Defect"},{"id":"2","title":"Add more functionality","description":"The app doesn't do anything. Make it do stuff","type":"Improvement","milestone":"v1.0","state":"A"},{"id":"3","title":"Add instructions","description":"The app is not user friendly","type":"Improvement","milestone":"v1.0","state":"E"},{"id":"4","title":"Add more windows","description":"The app is too simple. We need more windows","type":"Improvement","milestone":"v1.0","state":"A"},{"id":"5","title":"Make the app incredible","description":"The app must be incredible by the time the second milestone is released","type":"Improvement","milestone":"v2.0","state":"A"}]
+ var tasks = [{"id":"1","title":"App crashes","description":"1. Open app.\n2. Error message appears.\n3. Dismiss the message.\n4. Crash","milestone":"v1.0","state":"D","type":"Defect","project":"AppOne"},{"id":"2","title":"Add more functionality","description":"The app doesn't do anything. Make it do stuff","type":"Improvement","milestone":"v1.0","state":"A","project":"AppOne"},{"id":"3","title":"Add instructions","description":"The app is not user friendly","type":"Improvement","milestone":"v1.0","state":"E","project":"AppTwo"},{"id":"4","title":"Add more windows","description":"The app is too simple. We need more windows","type":"Improvement","milestone":"v2.0","state":"A","project":"AppOne"},{"id":"5","title":"Make the app incredible","description":"The app must be incredible by the time the second milestone is released","type":"Improvement","milestone":"v1.0","state":"A","project":"AppTwo"}]
  
 </script>
 <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
@@ -27,13 +27,14 @@
     #progress-started-fill{height:3px;background-color:#A5C700;}
     #show-closed-tasks-link{cursor:pointer;text-decoration:underline;color:blue;margin:10px;font-size:13px}
     #storage-notice{text-align:left;font-size:9px;color:#E00;}
-    .border {border:1px solid #CCC;}
-    .box {min-height:55px;text-align:left;font-size:80%;padding:0.5em;border:1px solid black;margin-bottom:1em;margin-right:5px;border-radius:5px;box-shadow:1px 1px 5px #555;}
+    .border {border-bottom:1px solid #CCC;}
+	  .box {min-height:55px;text-align:left;font-size:80%;padding:0.5em;border:1px solid black;margin-bottom:1em;margin-right:5px;border-radius:5px;box-shadow:1px 1px 5px #555;}
 	  .button {background-color:#DDD;color:#555;padding:0.2em;text-decoration:none;border:1px solid #555;}
     .clear {clear:both;}
 	  .Defect{background-color:red;float:right;width:10px;height:10px;border: 1px solid black;border-radius:3px;}
 	  .dp14 {width:14%;  float:left;  display: inline;  *margin-right:-1px; margin-left:5%;}
 	  .dp50 {width:50%;  float:left;  display: inline;  *margin-right:-1px; }
+	  .dp100 {width:100%;  float:left;  display: inline;  *margin-right:-1px; }
 	  .footer { font-size: 80%; color: #777; padding: .5em; position:fixed; bottom:0; width: 100%;z-index:-1;}
     .headline { font-weight: bold; height: 3em; color: #000000;}
 	  .hidden {display:none}
@@ -42,7 +43,8 @@
 	  .input {width: 75%; padding:3px; margin:5px; font-family:Century Gothic, sans-serif;border:1px solid #AAA;}
     .placeholder {border: 1px solid black}
     .queue_column .headline { font-weight: bold; height: 3em; color: #d0d0d0;}
-	  .task-list{border-collapse:collapse; width:90%; margin:auto}
+	  .task-list{border-collapse:collapse; width:100%; margin:auto;font-size:13px;}
+	  .task-list td{vertical-align:top;}
     .task-list-wrapper{width:100%;height:650px;text-align:left;}
     .title{font-weight:bold;font-size:11px;padding-bottom:3px;margin:0px;}
     .tooltip {white-space:pre;text-align:left;display:none;position:absolute;border:1px solid #333;background-color:#161616;border-radius:5px;padding:10px;color:#fff;font-size:12px;}
@@ -51,7 +53,6 @@
     input[type=button]{padding:5px;margin-left:15px;}
     textarea {height:150px;}
 	  ul { list-style: none; margin: 0 0 0 0; padding: 0 0 0 0;}
-	  
 	  
 	  .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
     .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
@@ -69,9 +70,14 @@
 
 <h1 id="header">bugs</h1>
 <div id="board_wrapper">
-  <div style="text-align:right;padding-right:50px;padding-bottom:10px">
+  <div class="dp100" style="padding-bottom:10px">
+  <div class="dp50" style="text-align:left">
+    Project: <select id="projects"></select>
+  </div>
+  <div class="dp50" style="text-align:right">
     Milestone: <select id="milestones"></select>
     <div id="progress"><div id="progress-started-fill"><div id="progress-fill"></div></div></div>
+  </div>
   </div>
   <div id="kanban"></div>
 </div>
@@ -82,13 +88,13 @@
       <div class="task-list-wrapper">
         <fieldset class="border">
         <legend>List of Open Tasks</legend>
-        <table id="open-task-list" class="task-list"><tr><th>ID</th><th>Title</th><th>Milestone</th><th>State</th><th>Type</th></tr></table>
+        <table id="open-task-list" class="task-list"><tr><th>ID</th><th>Title</th><th>Project</th><th>Milestone</th><th>State</th><th>Type</th></tr></table>
         </fieldset>
         <span id="show-closed-tasks-link">Show closed tasks</span>
         <div id="closed-task-list-wrapper"> 
           <fieldset class="border">
           <legend>List of Closed Tasks</legend>
-          <table id="closed-task-list" class="task-list"><tr><th>ID</th><th>Title</th><th>Milestone</th><th>State</th><th>Type</th></tr></table>
+          <table id="closed-task-list" class="task-list"><tr><th>ID</th><th>Title</th><th>Project</th><th>Milestone</th><th>State</th><th>Type</th></tr></table>
           </fieldset>
         </div>
       </div>
@@ -111,6 +117,9 @@
                   <option value="Improvement">Improvement</option>
                   <option value="Defect">Defect</option>
                 </select>
+        </p>
+        <p>
+          Project: <input  type="text" id="new_item_project" class="input" autocomplete="on" placeholder="Project which this task belongs to"></input>
         </p>
         <p>
           Milestone: <input  type="text" id="new_item_mile" class="input" autocomplete="on" placeholder="Target the task for a specific milestone"></input>
@@ -213,7 +222,7 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
       for (i = 0; i < length; i++) {
           task = ts[i];
           var taskElement = 
-              $('<tr id="' + task.id + '" class="taskrow" data-desc="'+task.description+'"><td class="readonly"><a href="'+window.location.pathname+'?id='+ task.id +'">' + task.id + "</a></td><td>"+ task.title + "</td><td>" + task.milestone + "</td><td class='readonly'>" +  getStateName(task.state) + "</td><td class='readonly'>" +  task.type + '</td></tr>');
+              $('<tr id="' + task.id + '" class="taskrow" data-desc="'+task.description+'"><td class="readonly"><a href="'+window.location.pathname+'?id='+ task.id +'">' + task.id + "</a></td><td class='readonly'>"+ task.title + "</td><td class='readonly'>" + task.project + "</td><td class='readonly'>" + task.milestone + "</td><td class='readonly'>" +  getStateName(task.state) + "</td><td class='readonly'>" +  task.type + '</td></tr>');
           if(task.state === 'E'){
             $('#closed-task-list').append(taskElement);
           }else{
@@ -222,7 +231,7 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
       }
   }
   
-  var updateProgress = function(currentRev){
+  var updateProgress = function(currentMilestone){
        var length = tasks.length,
                    barWidth,
                    task = null,
@@ -232,7 +241,7 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
                    startedTotal = 0;
        for (i = 0; i < length; i++) {
           task = tasks[i];
-          if(currentRev === task.milestone){
+          if(currentMilestone === task.milestone){
             milestoneTotal++;
             if($.inArray(task.state, (["D","E"])) != -1){
               startedTotal++;
@@ -247,14 +256,14 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
       $('#progress-started-fill').css('width',startedTotal/milestoneTotal * barWidth);           
   }
   
-  var drawTasks = function(currentRev){
+  var drawTasks = function(currentProject, currentMilestone){
       
       var length = tasks.length,
                    task = null,
                    i, classes, taskElement;
       for (i = 0; i < length; i++) {
           task = tasks[i];
-          if(currentRev === task.milestone){
+          if(currentProject === task.project && currentMilestone === task.milestone){
             classes = 'box box_' + task.state; 
             taskElement = 
             $('<li id="'+task.id+'"><div class="'+classes+'"  data-id="'+task.id+'" data-desc="'+task.description+'"><div class="'+task.type+'" title="'+task.type+'"></div><p class="title">' + task.id + "</p>" + task.title + '</div></li>');
@@ -262,10 +271,10 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
           }
       }
       makeBoardDraggable();
-      updateProgress(currentRev);
+      updateProgress(currentMilestone);
   }
   
-  var initMilestones = function(){
+  var initMilestones = function(currentProject){
       
       $("#milestones").empty();
       var revs = [],
@@ -274,7 +283,7 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
                  , milestone;
       for (i=0, len=length; i<len; i++ ) {
           milestone = tasks[i].milestone;
-          if($.inArray(milestone,revs) == -1){
+          if(currentProject === tasks[i].project && $.inArray(milestone,revs) == -1){
             $("#milestones").append($("<option value='"+milestone+"'>"+milestone+"</option>"));
             revs.push(milestone);
           }
@@ -286,6 +295,34 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
         lookup: revs
       });
       return revs;
+  }
+  
+  var initProjects = function(){
+      
+      $("#projects").empty();
+      var projects = [],
+                 length = tasks.length,
+                 i
+                 , project;
+      for (i=0, len=length; i<len; i++ ) {
+          project = tasks[i].project;
+          if($.inArray(project,projects) == -1){
+            $("#projects").append($("<option value='"+project+"'>"+project+"</option>"));
+            projects.push(project);
+          }
+      }
+      
+      $("#projects option").sort(function(a, b){return ($(b).text()) < ($(a).text());}).appendTo("#projects");
+      
+      $("#new_item_project").autocomplete({
+        lookup: projects
+      });
+      
+      if($.inArray(readValue('bugs-project'),projects) == -1){
+        setValue("bugs-project",projects[0]);
+      }
+      
+      return projects;
   }
       
   var createBoard = function() {
@@ -325,7 +362,7 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
   
   var drawKanban = function(){
       createBoard();
-      drawTasks($("#milestones").find(":selected").val());
+      drawTasks($("#projects").find(":selected").val(), $("#milestones").find(":selected").val());
   }
   
   var setCookie = function(n,v){document.cookie = n + '=' + v + '; path=/;';}
@@ -364,6 +401,7 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
       if (param){
         $("#data_link").click();
         $("#new_task_btn").click();
+        $("#new_item_title").focus();
       }
   }
   
@@ -382,6 +420,7 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
       $("#new_item_title").val(t.title);
       $("#new_item_desc").val(t.description);
       $("#new_item_type").val(t.type);
+      $("#new_item_project").val(t.project);
       $("#new_item_mile").val(t.milestone);
   }
   
@@ -411,7 +450,7 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
   
   $(function(){
       if(title){
-        $('#header').html(title);
+        $('#title').html(title);
         document.title = title + " - bugs";
       }
       if(logo){
@@ -426,7 +465,8 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
         $("#data_link").show();
         $("#data_wrapper").hide();
         $("#board_link").hide();
-        milestones = initMilestones();
+        projects = initProjects();
+        milestones = initMilestones(readValue('bugs-project'));
         $("#milestones").val(readValue('bugs-milestone'));
         drawKanban(); 
       })
@@ -445,6 +485,13 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
       
       $("#milestones").change(function(){
         setValue("bugs-milestone", $("#milestones").find(":selected").val());
+        $(".box").remove();
+        drawKanban();
+      });
+      
+      $("#projects").change(function(){
+        setValue("bugs-project", $("#projects").find(":selected").val());
+        milestones = initMilestones(readValue('bugs-project'));
         $(".box").remove();
         drawKanban();
       });
@@ -494,6 +541,7 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
               title: $.trim($("#new_item_title").val()),
               description: $.trim($("#new_item_desc").val()),
               type: $.trim($("#new_item_type").val()),
+              project: $.trim($("#new_item_project").val()),
               milestone: $.trim($("#new_item_mile").val()),
               state: 'A'
             };
@@ -504,10 +552,11 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
               t.title =  $.trim($("#new_item_title").val());
               t.description = $.trim($("#new_item_desc").val());
               t.type = $.trim($("#new_item_type").val());
+              t.project = $.trim($("#new_item_project").val());
               t.milestone = $.trim($("#new_item_mile").val());
             }
           }
-          initMilestones();
+          initMilestones(readValue('bugs-project'));
           saveChanges();
           listTasks();
         }else{
@@ -559,8 +608,10 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
       }else{
         $("#storage-notice").text("Using manual storage");
       }      
-                              
-      milestones = initMilestones();
+      
+      projects = initProjects();                        
+      milestones = initMilestones(readValue('bugs-project'));
+      $("#projects").val(readValue('bugs-project'));
       $("#milestones").val(readValue('bugs-milestone'));
       drawKanban();
       checkUrlParams();
@@ -568,6 +619,7 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
   
   var useAutomaticStorage = false;
   var milestones = [];
+  var projects = [];
 </script>
 </body>
 </html>
