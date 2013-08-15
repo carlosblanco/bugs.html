@@ -5,8 +5,7 @@
  var logo ;//= "Your org's logo image base64 encoded"
  var title;//= "Your project name";
  
- var tasks = [{"id":"1","title":"App crashes","description":"1. Open app.\n2. Error message appears.\n3. Dismiss the message.\n4. Crash","milestone":"v1.0","state":"D","type":"Defect","project":"AppOne"},{"id":"2","title":"Add more functionality","description":"The app doesn't do anything. Make it do stuff","type":"Improvement","milestone":"v1.0","state":"A","project":"AppOne"},{"id":"3","title":"Add instructions","description":"The app is not user friendly","type":"Improvement","milestone":"v1.0","state":"E","project":"AppTwo"},{"id":"4","title":"Add more windows","description":"The app is too simple. We need more windows","type":"Improvement","milestone":"v2.0","state":"A","project":"AppOne"},{"id":"5","title":"Make the app incredible","description":"The app must be incredible by the time the second milestone is released","type":"Improvement","milestone":"v1.0","state":"A","project":"AppTwo"}]
- 
+ var tasks = [{"id":"1","title":"App crashes","description":"1. Open app.\n2. Error message appears.\n3. Dismiss the message.\n4. Crash","milestone":"v1.0","state":"D","type":"Defect","project":"AppOne"},{"id":"2","title":"Add more functionality","description":"The app doesn't do anything. Make it do stuff","type":"Improvement","milestone":"v1.0","state":"A","project":"AppOne"},{"id":"3","title":"Add instructions","description":"The app is not user friendly","type":"Improvement","milestone":"v1.0","state":"E","project":"AppTwo"},{"id":"4","title":"Add more windows","description":"The app is too simple. We need more windows","type":"Improvement","milestone":"v2.0","state":"A","project":"AppOne"},{"id":"5","title":"Make the app incredible","description":"The app must be incredible by the time the second milestone is released","type":"Improvement","milestone":"v1.0","state":"A","project":"AppTwo"}];
  
 </script>
 <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
@@ -22,7 +21,7 @@
     #content-wrapper{margin:10px}
     #closed-task-list-wrapper{display:none;}
     #header{font-family:Calibri, Helvetica, sans-serif}
-    #logo{z-index:-1;float:left;width:120px;margin:10px -50px 0px 10px;}
+    #logo{z-index:-1;float:left;width:120px;margin:10px -50px 0px 10px;cursor:pointer}
     #progress {height:3px;background-color:#EEE;width:180px;margin-left:auto;border: 1px solid black}
     #progress-fill {height:3px;background-color:green;}
     #progress-started-fill{height:3px;background-color:#A5C700;}
@@ -105,13 +104,13 @@
         <legend>Task Details</legend>
         <input type="button" id="new_task_btn" value="New Task"/>
         <p>
-          ID: <input type="text" id="new_item_id" class="input" placeholder="An identification value for the task"/>
+          ID: <input type="number" id="new_item_id" class="input" placeholder="An numeric identificator for the task"/>
         </p>
         <p>
           Title: <input type="text" id="new_item_title" class="input" placeholder="What the task is about"/>
         </p>
         <p>
-          Desciption: <textarea id="new_item_desc" class="input" placeholder="Provide the steps to reproduce the problem, the expected output and what you saw instead."></textarea>
+          Desciption: <textarea id="new_item_desc" class="input" placeholder="More information about the task or provide the steps to reproduce the problem, the expected output and what you saw instead."></textarea>
         </p>
         <p>
           Type: <select id="new_item_type" class="input" autocomplete="on" placeholder="Bug, Improvement, ..."/>
@@ -209,12 +208,27 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
       }
   }
   
+  var sortedTasks = function (){
+    return tasks.sort(function(a,b) {
+          var v = a.project.localeCompare(b.project);
+          if(v==0){
+            var m = a.milestone.localeCompare(b.milestone);
+            if(m==0){
+              return a.id - b.id;
+            }else{
+              return m;
+            }
+          }else{
+            return v; 
+          }
+      });
+  }
+  
   var listTasks = function(){
       $('#open-task-list').find("tr:gt(0)").remove();//clear rows
       $('#closed-task-list').find("tr:gt(0)").remove();//clear rows
-      var ts = tasks.sort(function(a,b) {
-          return (a.milestone - b.milestone);
-      });
+      
+      var ts = sortedTasks();
       
       var length = ts.length,
                    task = null,
@@ -231,7 +245,7 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
       }
   }
   
-  var updateProgress = function(currentMilestone){
+  var updateProgress = function(currentProject, currentMilestone){
        var length = tasks.length,
                    barWidth,
                    task = null,
@@ -241,7 +255,7 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
                    startedTotal = 0;
        for (i = 0; i < length; i++) {
           task = tasks[i];
-          if(currentMilestone === task.milestone){
+          if(currentProject === task.project && currentMilestone === task.milestone){
             milestoneTotal++;
             if($.inArray(task.state, (["D","E"])) != -1){
               startedTotal++;
@@ -271,7 +285,7 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
           }
       }
       makeBoardDraggable();
-      updateProgress(currentMilestone);
+      updateProgress(currentProject, currentMilestone);
   }
   
   var initMilestones = function(currentProject){
@@ -354,7 +368,7 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
           var data = $(".state").has($(this));
           getTaskById($(this).attr("id")).state = data.attr('id');
           saveChanges();
-          updateProgress($("#milestones").find(":selected").val());
+          updateProgress($("#projects").find(":selected").val(), $("#milestones").find(":selected").val());
        }});
   }
   
@@ -427,7 +441,7 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
         , length = tasks.length
         , i;
     for(i=0;i<length;i++){
-      if(max < tasks[i].id){
+      if(Number(max) < Number(tasks[i].id)){
         max = tasks[i].id;
       }
     }
@@ -458,13 +472,14 @@ return(!i||i!==r&&!b.contains(r,i))&&(e.type=o.origType,n=o.handler.apply(this,a
       $("#board_link").hide();
       $("#data_wrapper").hide();
             
-      $("#board_link").click(function() {
+      $("#board_link, #logo").click(function() {
         $("#board_wrapper").show();
         $("#data_link").show();
         $("#data_wrapper").hide();
         $("#board_link").hide();
         projects = initProjects();
         milestones = initMilestones(readValue('bugs-project'));
+        $("#projects").val(readValue('bugs-project'));
         $("#milestones").val(readValue('bugs-milestone'));
         drawKanban(); 
       })
